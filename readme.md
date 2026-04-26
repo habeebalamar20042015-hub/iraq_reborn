@@ -1,7 +1,3 @@
-Got you — clean, simple, no overcomplication 👇
-
----
-
 # 🇮🇶 Iraq Reborn | 2026 Beta
 
 **Iraq Reborn** is a 2026 expansion submod for *Hearts of Iron IV* built on Millennium Dawn.
