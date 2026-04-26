@@ -3,10 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="index,follow">
 <title>Iraq Reborn | 2026 HOI4 Mod</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
   min-height:100vh;
   background:#030102;
@@ -19,47 +24,58 @@ canvas#flagCanvas{
   inset:0;
   width:100%;
   height:100%;
+  z-index:-5;
+}
+.ambient{
+  position:fixed;
+  inset:0;
   z-index:-4;
-}
-.noise{
-  position:fixed;
-  inset:0;
   background:
-    radial-gradient(circle at 20% 20%,#a1121f55,transparent 30%),
-    radial-gradient(circle at 80% 70%,#086b3650,transparent 32%),
-    radial-gradient(circle at 50% 100%,#c9a22744,transparent 35%);
-  animation:breath 7s infinite alternate ease-in-out;
-  z-index:-3;
+    radial-gradient(circle at 15% 20%,rgba(206,17,38,.42),transparent 28%),
+    radial-gradient(circle at 85% 30%,rgba(8,117,58,.34),transparent 30%),
+    radial-gradient(circle at 50% 90%,rgba(201,162,39,.32),transparent 35%),
+    linear-gradient(145deg,#020001,#120306 55%,#020402);
+  animation:ambientMove 8s infinite alternate ease-in-out;
 }
-.scanlines{
+.grid{
   position:fixed;
   inset:0;
+  z-index:-3;
+  background-image:
+    linear-gradient(rgba(201,162,39,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,162,39,.08) 1px,transparent 1px);
+  background-size:46px 46px;
+  animation:gridMove 14s linear infinite;
+}
+.scan{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
   background:repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,.035) 0px,
+    rgba(255,255,255,.035) 0,
     rgba(255,255,255,.035) 1px,
-    transparent 3px,
-    transparent 7px
+    transparent 4px,
+    transparent 8px
   );
-  opacity:.25;
-  pointer-events:none;
-  z-index:5;
+  opacity:.18;
 }
 .hero{
   min-height:100vh;
   display:grid;
   place-items:center;
-  padding:45px 16px;
+  padding:48px 16px;
 }
 .panel{
-  width:min(1120px,96vw);
+  width:min(1180px,96vw);
   padding:48px;
   border-radius:34px;
-  background:linear-gradient(145deg,rgba(5,0,2,.88),rgba(20,3,8,.78));
+  background:linear-gradient(145deg,rgba(5,0,2,.9),rgba(22,3,8,.78));
   border:1px solid rgba(201,162,39,.55);
   box-shadow:
-    0 0 70px rgba(201,162,39,.25),
-    inset 0 0 55px rgba(114,47,55,.28);
+    0 0 80px rgba(201,162,39,.24),
+    inset 0 0 55px rgba(114,47,55,.25);
   backdrop-filter:blur(16px);
   position:relative;
   overflow:hidden;
@@ -69,38 +85,42 @@ canvas#flagCanvas{
   content:"";
   position:absolute;
   inset:-3px;
-  background:linear-gradient(120deg,transparent,#c9a227,transparent,#ce1126,transparent);
-  animation:borderMove 5s linear infinite;
-  opacity:.28;
+  background:linear-gradient(120deg,transparent,#c9a227,transparent,#ce1126,transparent,#08753a,transparent);
+  animation:borderMove 5.5s linear infinite;
+  opacity:.26;
 }
 .panel:after{
   content:"";
   position:absolute;
-  width:420px;
-  height:420px;
-  background:#c9a22725;
-  filter:blur(90px);
-  right:-120px;
-  top:-140px;
+  width:440px;
+  height:440px;
+  right:-140px;
+  top:-160px;
   border-radius:50%;
+  background:rgba(201,162,39,.14);
+  filter:blur(90px);
   animation:orb 6s infinite alternate ease-in-out;
 }
-.content{position:relative;z-index:1;text-align:center}
+.content{
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
 .emblem{
-  font-size:76px;
-  filter:drop-shadow(0 0 25px #c9a227);
-  animation:float 3s infinite ease-in-out;
+  font-size:78px;
+  filter:drop-shadow(0 0 26px #c9a227);
+  animation:eagleFloat 3s infinite ease-in-out;
 }
 h1{
-  font-size:clamp(50px,9vw,112px);
+  font-size:clamp(48px,9vw,116px);
   color:#c9a227;
   letter-spacing:7px;
   margin-top:10px;
-  text-shadow:0 0 25px #c9a22799,0 0 70px #ce112688;
-  animation:titlePulse 2.6s infinite alternate;
+  text-shadow:0 0 26px rgba(201,162,39,.7),0 0 80px rgba(206,17,38,.55);
+  animation:titlePulse 2.7s infinite alternate;
 }
 .subtitle{
-  min-height:34px;
+  min-height:36px;
   margin:18px 0 28px;
   font-size:clamp(18px,2vw,25px);
   color:#fff1c8;
@@ -111,23 +131,55 @@ h1{
   flex-wrap:wrap;
   justify-content:center;
   gap:12px;
-  margin-bottom:28px;
+  margin-bottom:30px;
 }
 .badge{
   padding:12px 18px;
   border-radius:999px;
   background:linear-gradient(135deg,#ce1126,#111,#08753a);
-  border:1px solid rgba(201,162,39,.7);
+  border:1px solid rgba(201,162,39,.72);
   color:#fff0bd;
   font-weight:900;
   box-shadow:0 0 18px rgba(201,162,39,.22);
   animation:badgeJump 3s infinite ease-in-out;
 }
-.grid{
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:14px;
+  margin:30px 0;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:190px;
+  padding:15px 24px;
+  border-radius:15px;
+  text-decoration:none;
+  font-weight:950;
+  color:#140708;
+  background:linear-gradient(135deg,#c9a227,#ffe28a);
+  border:1px solid rgba(255,255,255,.26);
+  box-shadow:0 0 26px rgba(201,162,39,.34);
+  transition:.25s ease;
+}
+.btn:hover,.btn:focus{
+  transform:translateY(-5px) scale(1.04);
+  box-shadow:0 0 42px rgba(201,162,39,.58);
+  outline:none;
+}
+.btn.dark{
+  color:#fff0bd;
+  background:linear-gradient(135deg,#741821,#070202,#07572c);
+}
+.gridCards{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr));
   gap:18px;
-  margin-top:25px;
+  margin-top:28px;
 }
 .card{
   text-align:left;
@@ -140,10 +192,12 @@ h1{
   opacity:0;
   animation:cardIn .9s forwards ease;
 }
-.card:nth-child(1){animation-delay:.2s}
-.card:nth-child(2){animation-delay:.4s}
-.card:nth-child(3){animation-delay:.6s}
-.card:nth-child(4){animation-delay:.8s}
+.card:nth-child(1){animation-delay:.15s}
+.card:nth-child(2){animation-delay:.3s}
+.card:nth-child(3){animation-delay:.45s}
+.card:nth-child(4){animation-delay:.6s}
+.card:nth-child(5){animation-delay:.75s}
+.card:nth-child(6){animation-delay:.9s}
 .card h2{
   color:#c9a227;
   margin-bottom:12px;
@@ -155,27 +209,6 @@ h1{
   font-size:16px;
 }
 ul{padding-left:20px}
-.links{
-  margin-top:30px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  justify-content:center;
-}
-.btn{
-  padding:15px 24px;
-  border-radius:14px;
-  text-decoration:none;
-  font-weight:900;
-  color:#120707;
-  background:linear-gradient(135deg,#c9a227,#ffe28a);
-  box-shadow:0 0 25px rgba(201,162,39,.32);
-  transition:.25s;
-}
-.btn:hover{
-  transform:translateY(-5px) scale(1.04);
-  box-shadow:0 0 35px rgba(201,162,39,.55);
-}
 .load{
   background:#050102;
   border:1px solid rgba(201,162,39,.45);
@@ -185,6 +218,15 @@ ul{padding-left:20px}
   color:#ffd96d;
   margin-top:12px;
 }
+.notice{
+  margin-top:28px;
+  padding:18px;
+  border-radius:18px;
+  background:rgba(201,162,39,.08);
+  border:1px solid rgba(201,162,39,.35);
+  color:#f3dfaa;
+  line-height:1.7;
+}
 .footer{
   margin-top:30px;
   color:#c9a227;
@@ -192,60 +234,108 @@ ul{padding-left:20px}
   letter-spacing:1px;
   animation:glowText 2s infinite alternate;
 }
-@keyframes breath{to{filter:hue-rotate(15deg) brightness(1.2);transform:scale(1.08)}}
-@keyframes panelIn{from{opacity:0;transform:scale(.9) translateY(50px)}to{opacity:1;transform:none}}
+@keyframes ambientMove{to{filter:hue-rotate(14deg) brightness(1.16);transform:scale(1.06)}}
+@keyframes gridMove{to{background-position:92px 92px}}
+@keyframes panelIn{from{opacity:0;transform:scale(.9) translateY(55px)}to{opacity:1;transform:none}}
 @keyframes borderMove{to{transform:translateX(60%)}}
 @keyframes orb{to{transform:translate(-90px,80px) scale(1.2)}}
-@keyframes float{50%{transform:translateY(-14px) scale(1.08)}}
-@keyframes titlePulse{to{letter-spacing:11px;text-shadow:0 0 40px #c9a227,0 0 90px #ce1126}}
+@keyframes eagleFloat{50%{transform:translateY(-14px) scale(1.08)}}
+@keyframes titlePulse{to{letter-spacing:11px;text-shadow:0 0 42px #c9a227,0 0 95px #ce1126}}
 @keyframes badgeJump{50%{transform:translateY(-8px)}}
 @keyframes cardIn{to{opacity:1;transform:none}}
 @keyframes glowText{to{text-shadow:0 0 20px #c9a227}}
-@media(max-width:700px){
+@media(max-width:720px){
   .panel{padding:28px}
   h1{letter-spacing:3px}
+  .btn{width:100%}
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="flagCanvas"></canvas>
-<div class="noise"></div>
-<div class="scanlines"></div>
+<canvas id="flagCanvas" aria-hidden="true"></canvas>
+<div class="ambient" aria-hidden="true"></div>
+<div class="grid" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
 
 <main class="hero">
 <section class="panel">
 <div class="content">
 
-<div class="emblem">🦅</div>
+<div class="emblem" aria-hidden="true">🦅</div>
 <h1>IRAQ REBORN</h1>
 <div class="subtitle" id="typing"></div>
 
 <div class="badges">
-  <div class="badge">🇮🇶 Iraq 2026</div>
+  <div class="badge">Iraq 2026</div>
   <div class="badge">Beta v1.0</div>
-  <div class="badge">INSS</div>
-  <div class="badge">ICTS</div>
+  <div class="badge">INSS System</div>
+  <div class="badge">ICTS System</div>
+  <div class="badge">30+ Focuses</div>
   <div class="badge">Millennium Dawn Submod</div>
 </div>
 
-<div class="grid">
+<div class="actions">
+  <a class="btn" href="https://github.com/habeebalamar20042015-hub/iraq_reborn/releases" target="_blank" rel="noopener noreferrer">
+    Download Release
+  </a>
+  <a class="btn dark" href="https://github.com/habeebalamar20042015-hub/iraq_reborn" target="_blank" rel="noopener noreferrer">
+    View Repository
+  </a>
+</div>
+
+<div class="gridCards">
+
   <div class="card">
     <h2>About</h2>
     <p>
-      Iraq Reborn is a cinematic 2026 Hearts of Iron IV submod expanding Iraq with
-      modern national security, intelligence, military, political, and strategic content.
+      Iraq Reborn is a cinematic 2026 Hearts of Iron IV submod expanding Iraq with modern security,
+      intelligence, military, political, diplomatic, and national development content.
     </p>
   </div>
 
   <div class="card">
-    <h2>Core Expansion</h2>
+    <h2>INSS Expansion</h2>
     <ul>
-      <li>Iraqi National Security Service content</li>
-      <li>Iraqi Counter Terrorism Service content</li>
-      <li>New focuses, ideas, and events</li>
-      <li>Modern Iraq rebuilding paths</li>
+      <li>Multi level Iraqi National Security Service system</li>
+      <li>INSS decision system</li>
+      <li>Security and intelligence national ideas</li>
+      <li>Internal stability and state authority mechanics</li>
+      <li>Counter intelligence and national protection themes</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>ICTS Expansion</h2>
+    <ul>
+      <li>ICTS battalion and brigade development system</li>
+      <li>Special operations decision system</li>
+      <li>Counter terrorism modernization ideas</li>
+      <li>Elite unit readiness and deployment themes</li>
+      <li>Military security and rapid response content</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Focus Tree Content</h2>
+    <ul>
+      <li>30+ new Iraq 2026 national focuses</li>
+      <li>Foreign policy content around the United States</li>
+      <li>Regional diplomacy and strategic alignment branches</li>
+      <li>Security, economy, military, and intelligence paths</li>
+      <li>Beta foundation for future political expansions</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Ideas and Decisions</h2>
+    <ul>
+      <li>Large collection of national spirits</li>
+      <li>Security, military, economic, and diplomatic ideas</li>
+      <li>Decision based modernization systems</li>
+      <li>US foreign policy influence and cooperation content</li>
+      <li>More ideas and events planned for future versions</li>
     </ul>
   </div>
 
@@ -255,21 +345,18 @@ ul{padding-left:20px}
       <li>Millennium Dawn: A Modern Day Mod</li>
       <li>MD Revelations 2026</li>
     </ul>
-  </div>
-
-  <div class="card">
-    <h2>Load Order</h2>
     <div class="load">
       1. Millennium Dawn<br>
       2. MD Revelations 2026<br>
       3. Iraq Reborn
     </div>
   </div>
+
 </div>
 
-<div class="links">
-  <a class="btn" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2777392649" target="_blank">Millennium Dawn</a>
-  <a class="btn" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3687583314" target="_blank">MD Revelations 2026</a>
+<div class="notice">
+  Security note: this page uses no external scripts, no forms, no external images, no tracking, no dynamic HTML injection,
+  protected external links, and a strict browser security policy suitable for a static GitHub Pages showcase.
 </div>
 
 <div class="footer">
@@ -281,126 +368,147 @@ ul{padding-left:20px}
 </main>
 
 <script>
-const canvas=document.getElementById("flagCanvas");
-const ctx=canvas.getContext("2d");
+"use strict";
 
-let w,h,cols,rows,points=[];
-const spacing=28;
+(function(){
+  const canvas = document.getElementById("flagCanvas");
+  const ctx = canvas.getContext("2d", { alpha: true });
 
-function resize(){
-  w=canvas.width=innerWidth;
-  h=canvas.height=innerHeight;
-  cols=Math.ceil(w/spacing)+2;
-  rows=Math.ceil(h/spacing)+2;
-  points=[];
-  for(let y=0;y<rows;y++){
-    for(let x=0;x<cols;x++){
-      points.push({
-        x:x*spacing-spacing,
-        y:y*spacing-spacing,
-        baseX:x*spacing-spacing,
-        baseY:y*spacing-spacing,
-        vx:0,
-        vy:0
-      });
-    }
-  }
-}
-resize();
-addEventListener("resize",resize);
+  let w = 0;
+  let h = 0;
+  let cols = 0;
+  let rows = 0;
+  let points = [];
+  const spacing = 28;
 
-let mouse={x:w/2,y:h/2};
-addEventListener("mousemove",e=>{
-  mouse.x=e.clientX;
-  mouse.y=e.clientY;
-});
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    cols = Math.ceil(w / spacing) + 2;
+    rows = Math.ceil(h / spacing) + 2;
+    points = [];
 
-function colorForY(y){
-  const yy=y/h;
-  if(yy<0.33)return "#ce1126";
-  if(yy<0.66)return "#f8f8f8";
-  return "#050505";
-}
-
-function drawFlag(time){
-  ctx.clearRect(0,0,w,h);
-
-  for(const p of points){
-    const wave=Math.sin(p.baseX*.018+time*.002)*18+
-               Math.sin(p.baseY*.023+time*.0014)*10;
-
-    const dx=p.x-mouse.x;
-    const dy=p.y-mouse.y;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    const force=Math.max(0,1-dist/260)*18;
-
-    const tx=p.baseX;
-    const ty=p.baseY+wave+(dy/(dist||1))*force;
-
-    p.vx+=(tx-p.x)*.035;
-    p.vy+=(ty-p.y)*.035;
-    p.vx*=.88;
-    p.vy*=.88;
-    p.x+=p.vx;
-    p.y+=p.vy;
-  }
-
-  for(let y=0;y<rows-1;y++){
-    for(let x=0;x<cols-1;x++){
-      const i=y*cols+x;
-      const p1=points[i];
-      const p2=points[i+1];
-      const p3=points[i+cols+1];
-      const p4=points[i+cols];
-
-      ctx.beginPath();
-      ctx.moveTo(p1.x,p1.y);
-      ctx.lineTo(p2.x,p2.y);
-      ctx.lineTo(p3.x,p3.y);
-      ctx.lineTo(p4.x,p4.y);
-      ctx.closePath();
-
-      ctx.fillStyle=colorForY((p1.baseY+p3.baseY)/2);
-      ctx.globalAlpha=.18;
-      ctx.fill();
+    for(let y = 0; y < rows; y++){
+      for(let x = 0; x < cols; x++){
+        const px = x * spacing - spacing;
+        const py = y * spacing - spacing;
+        points.push({
+          x: px,
+          y: py,
+          baseX: px,
+          baseY: py,
+          vx: 0,
+          vy: 0
+        });
+      }
     }
   }
 
-  ctx.globalAlpha=.12;
-  ctx.fillStyle="#0b7a34";
-  ctx.font="bold "+Math.max(42,w/18)+"px Georgia";
-  ctx.textAlign="center";
-  ctx.fillText("الله أكبر",w/2,h/2+20);
+  resize();
+  window.addEventListener("resize", resize, { passive: true });
 
-  ctx.globalAlpha=1;
-  requestAnimationFrame(drawFlag);
-}
-requestAnimationFrame(drawFlag);
+  const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-const lines=[
-  "A cinematic 2026 Iraq experience.",
-  "INSS | ICTS | Focuses | Ideas | Events.",
-  "Built for Millennium Dawn and MD Revelations 2026.",
-  "Beta version. First release. More content is coming."
-];
+  window.addEventListener("mousemove", function(e){
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  }, { passive: true });
 
-let i=0,j=0,del=false;
-const typing=document.getElementById("typing");
-
-function type(){
-  typing.textContent=lines[i].slice(0,j);
-  if(!del&&j++===lines[i].length){
-    del=true;
-    setTimeout(type,1200);
-    return;
+  function colorForY(y){
+    const yy = y / h;
+    if(yy < 0.33) return "#ce1126";
+    if(yy < 0.66) return "#f8f8f8";
+    return "#050505";
   }
-  if(del&&j--===0){
-    del=false;
-    i=(i+1)%lines.length;
+
+  function drawFlag(time){
+    ctx.clearRect(0, 0, w, h);
+
+    for(const p of points){
+      const wave =
+        Math.sin(p.baseX * 0.018 + time * 0.002) * 18 +
+        Math.sin(p.baseY * 0.023 + time * 0.0014) * 10;
+
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const force = Math.max(0, 1 - dist / 260) * 18;
+
+      const tx = p.baseX;
+      const ty = p.baseY + wave + (dy / (dist || 1)) * force;
+
+      p.vx += (tx - p.x) * 0.035;
+      p.vy += (ty - p.y) * 0.035;
+      p.vx *= 0.88;
+      p.vy *= 0.88;
+      p.x += p.vx;
+      p.y += p.vy;
+    }
+
+    for(let y = 0; y < rows - 1; y++){
+      for(let x = 0; x < cols - 1; x++){
+        const i = y * cols + x;
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + cols + 1];
+        const p4 = points[i + cols];
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.lineTo(p3.x, p3.y);
+        ctx.lineTo(p4.x, p4.y);
+        ctx.closePath();
+
+        ctx.fillStyle = colorForY((p1.baseY + p3.baseY) / 2);
+        ctx.globalAlpha = 0.18;
+        ctx.fill();
+      }
+    }
+
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = "#08753a";
+    ctx.font = "bold " + Math.max(42, w / 18) + "px Georgia";
+    ctx.textAlign = "center";
+    ctx.fillText("الله أكبر", w / 2, h / 2 + 20);
+
+    ctx.globalAlpha = 1;
+    window.requestAnimationFrame(drawFlag);
   }
-  setTimeout(type,del?30:55);
-}
-type();
+
+  window.requestAnimationFrame(drawFlag);
+
+  const lines = [
+    "30+ focuses, INSS levels, ICTS brigades, ideas, and decisions.",
+    "US foreign policy, security reform, intelligence, and modernization.",
+    "Built for Millennium Dawn and MD Revelations 2026.",
+    "Beta version. First release. More content is coming."
+  ];
+
+  let i = 0;
+  let j = 0;
+  let deleting = false;
+  const typing = document.getElementById("typing");
+
+  function type(){
+    typing.textContent = lines[i].slice(0, j);
+
+    if(!deleting && j++ === lines[i].length){
+      deleting = true;
+      window.setTimeout(type, 1200);
+      return;
+    }
+
+    if(deleting && j-- === 0){
+      deleting = false;
+      i = (i + 1) % lines.length;
+    }
+
+    window.setTimeout(type, deleting ? 30 : 55);
+  }
+
+  type();
+})();
 </script>
 
 </body>
