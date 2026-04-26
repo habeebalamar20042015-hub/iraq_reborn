@@ -1,98 +1,90 @@
+<div align="center">
+
 # 🇮🇶 Iraq Reborn | 2026 Beta
 
 **Iraq Reborn** is a 2026 expansion submod for *Hearts of Iron IV* built on Millennium Dawn.
-It expands Iraq with new systems in intelligence, military, security, and foreign policy.
+It expands Iraq with advanced systems in intelligence, military, security, and foreign policy.
+
+</div>
 
 ---
+
+<div align="center">
 
 ## 🔥 Features
 
-**INSS System**
+</div>
 
-* Multi-level system
-* Decisions and intelligence mechanics
-* Security and internal stability ideas
+* **INSS System**
 
-**ICTS System**
+  * Multi-level system
+  * Decisions and intelligence mechanics
+  * Security and internal stability ideas
 
-* Battalion & Brigade structure
-* Special operations decisions
-* Military readiness systems
+* **ICTS System**
 
-**Focus Tree**
+  * Battalion & Brigade structure
+  * Special operations decisions
+  * Military readiness systems
 
-* 30+ new focuses
-* US foreign policy paths
-* Regional strategy branches
+* **Focus Tree**
 
-**Ideas & Decisions**
+  * 30+ new focuses
+  * US foreign policy paths
+  * Regional strategy branches
 
-* National spirits
-* Security, military, economic content
+* **Ideas & Decisions**
+
+  * National spirits
+  * Security, military, economic content
 
 ---
+
+<div align="center">
 
 ## 📦 Requirements
 
-**Millennium Dawn**
-ID: `2777392649`
+</div>
 
-**MD Revelations 2026**
-ID: `3687583314`
+* **Millennium Dawn**
+  ID: `2777392649`
 
-Available on Steam Workshop or other sources (like skymods.ru)
+* **MD Revelations 2026**
+  ID: `3687583314`
+
+Available on Steam Workshop or other sources (skymods.ru)
 
 ---
+
+<div align="center">
 
 ## ⚙️ Installation
 
-### 🟢 If using Steam Workshop
+</div>
 
-1. Go to:
+**Steam Workshop**
 
-```
-steamapps/workshop/content/394360/3687583314
-```
-
-2. Open:
-
-```
-history/countries/
+```txt
+steamapps/workshop/content/394360/3687583314/history/countries/
+DELETE: IRQ - Iraq.txt
 ```
 
-3. Delete:
+**Manual / Skymods**
 
-```
-IRQ - Iraq.txt
+```txt
+Documents/Paradox Interactive/Hearts of Iron IV/mod/3687583314/history/countries/
+DELETE: IRQ - Iraq.txt
 ```
 
 ---
 
-### 🟡 If using downloaded mod (skymods / manual)
-
-1. Go to your mod folder:
-
-```
-Documents/Paradox Interactive/Hearts of Iron IV/mod/3687583314/
-```
-
-2. Open:
-
-```
-history/countries/
-```
-
-3. Delete:
-
-```
-IRQ - Iraq.txt
-```
-
----
+<div align="center">
 
 ## ▶️ Load Order
 
-```
+</div>
+
+```txt
 Millennium Dawn
 MD Revelations 2026
 Iraq Reborn
@@ -100,19 +92,30 @@ Iraq Reborn
 
 ---
 
+<div align="center">
+
 ## 📥 Download
 
-Download from the **Releases** section.
+Download the latest version from the **Releases** section of this repository.
+
+</div>
 
 ---
+
+<div align="center">
 
 ## ⚠️ Beta
 
 * Early version
 * Updates coming
 
+</div>
+
 ---
 
-## 🇮🇶 Iraq Reborn
+<div align="center">
 
+🇮🇶 Iraq Reborn
 **The State Rises Again**
+
+</div>
